@@ -1,7 +1,7 @@
 {
   "name": "driven.t-back",
   "version": "1.0.0",
-  "description": "",
+  "description": "Back-end for Driven.t, an event management solution.",
   "main": "dist/index.js",
   "scripts": {
     "prebuild": "rm -rf dist",
@@ -63,7 +63,7 @@
     "nock": "^13.3.0",
     "nodemon": "^2.0.16",
     "prettier": "^2.7.1",
-    "prisma": "^3.14.0",
+    "prisma": "^3.15.2",
     "supertest": "^6.2.3",
     "ts-jest": "^26.5.5",
     "ts-node": "^10.7.0",
@@ -88,5 +88,8 @@
     "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
     "reflect-metadata": "^0.1.13"
+  },
+  "directories": {
+    "test": "tests"
   }
 }

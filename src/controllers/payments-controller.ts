@@ -15,7 +15,7 @@ export async function getPayment(req: AuthenticatedRequest, res: Response) {
       return res.status(httpStatus.BAD_REQUEST).send('Invalid ticketId');
     }
 
-    const ticket = await ticketsRepository.getTickets(ticketIdNumber);
+    const ticket = await ticketsRepository.getTicketById(ticketIdNumber);
     if (!ticket) {
       return res.sendStatus(httpStatus.NOT_FOUND);
     }

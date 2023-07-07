@@ -39,6 +39,12 @@ const ticketsRepository = {
     });
   },
 
+  getTicketById: async (ticketId: number) => {
+    return prisma.ticket.findUnique({
+      where: { id: ticketId },
+    });
+  },
+
 };
 
 export default ticketsRepository;

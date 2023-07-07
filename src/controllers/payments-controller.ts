@@ -50,7 +50,7 @@ export async function createPayment(req: Request & { userId: number }, res: Resp
       return res.status(httpStatus.BAD_REQUEST).send('Missing cardData or ticketId');
     }
 
-    const ticket = await ticketsRepository.getTickets(ticketId);
+    const ticket = await ticketsRepository.getTicketById(ticketId);
     if (!ticket) {
       return res.status(httpStatus.NOT_FOUND).send('Ticket not found');
     }

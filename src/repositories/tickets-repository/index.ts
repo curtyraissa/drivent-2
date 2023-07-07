@@ -25,6 +25,20 @@ const ticketsRepository = {
   getTicketsByTypes: async () => {
     return prisma.ticketType.findMany();
   },
+
+  newStatus: async (ticketId: number, status: any) => {
+    return prisma.ticket.update({
+      where: { id: ticketId },
+      data: { status },
+    });
+  },
+
+  getById: async (ticketTypeId: number) => {
+    return prisma.ticketType.findUnique({
+      where: { id: ticketTypeId },
+    });
+  },
+
 };
 
 export default ticketsRepository;

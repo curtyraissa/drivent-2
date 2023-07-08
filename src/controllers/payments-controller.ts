@@ -12,7 +12,7 @@ export async function getPayment(req: AuthenticatedRequest, res: Response) {
     const ticketIdNumber = Number(ticketId);
 
     if (isNaN(ticketIdNumber)) {
-      return res.status(httpStatus.BAD_REQUEST).send('Invalid ticketId');
+      return res.sendStatus(httpStatus.BAD_REQUEST);
     }
 
     const ticket = await ticketsRepository.getTicketById(ticketIdNumber);
@@ -22,22 +22,22 @@ export async function getPayment(req: AuthenticatedRequest, res: Response) {
 
     const enrollment = await enrollmentRepository.enrollmentById(ticket.enrollmentId);
     if (!enrollment) {
-      return res.status(httpStatus.NOT_FOUND).send('Enrollment not found');
+      return res.sendStatus(httpStatus.NOT_FOUND);
     }
 
     if (enrollment.userId != userId) {
-      return res.status(httpStatus.UNAUTHORIZED).send('Unauthorized');
+      return res.sendStatus(httpStatus.UNAUTHORIZED);
     }
 
     const payment = await paymentsRepository.getPayment(ticketIdNumber);
     if (!payment) {
-      return res.status(httpStatus.NOT_FOUND).send('Payment not found');
+      return res.sendStatus(httpStatus.NOT_FOUND);
     }
 
     res.send(payment);
   } catch (error) {
     console.error(error);
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).send('Internal Server Error');
+    res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
   }
 }
 
@@ -47,25 +47,25 @@ export async function createPayment(req: Request & { userId: number }, res: Resp
     const { cardData, ticketId } = req.body;
 
     if (!cardData || !ticketId) {
-      return res.status(httpStatus.BAD_REQUEST).send('Missing cardData or ticketId');
+      return res.sendStatus(httpStatus.BAD_REQUEST);
     }
 
     const ticket = await ticketsRepository.getTicketById(ticketId);
     if (!ticket) {
-      return res.status(httpStatus.NOT_FOUND).send('Ticket not found');
+      return res.sendStatus(httpStatus.NOT_FOUND);
     }
 
     if (ticket.status === 'PAID') {
-      return res.status(httpStatus.UNAUTHORIZED).send('Ticket already paid');
+      return res.sendStatus(httpStatus.UNAUTHORIZED);
     }
 
     const enrollment = await enrollmentRepository.enrollmentById(ticket.enrollmentId);
     if (!enrollment) {
-      return res.status(httpStatus.NOT_FOUND).send('Enrollment not found');
+      return res.sendStatus(httpStatus.NOT_FOUND);
     }
 
     if (enrollment.userId !== userId) {
-      return res.status(httpStatus.UNAUTHORIZED).send('Unauthorized');
+      return res.sendStatus(httpStatus.UNAUTHORIZED);
     }
 
     await ticketsRepository.newStatus(ticketId, 'PAID');
@@ -74,7 +74,7 @@ export async function createPayment(req: Request & { userId: number }, res: Resp
     const paymentParams: PaymentParams = {
       ticketId,
       cardIssuer: cardData.issuer,
-      cardLastDigits: LastDigits(cardData.number.toString()),
+      cardLastDigits: cardData.number.slice(-4),
       value: ticketType.price,
     };
 
@@ -84,8 +84,4 @@ export async function createPayment(req: Request & { userId: number }, res: Resp
     console.error(error);
     res.status(httpStatus.INTERNAL_SERVER_ERROR).send('Internal Server Error');
   }
-}
-
-function LastDigits(value: string) {
-  return value.slice(value.length - 4);
 }
